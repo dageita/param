@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: parambench-train-et-replay
+Version: 0.0.0
+Home-page: https://github.com/facebookresearch/param
+Author: Louis Feng
+Author-email: lofe@fb.com
+Requires-Python: >=3.8

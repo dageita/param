@@ -373,6 +373,10 @@ class ExecutionTrace:
         # remove all dataloader ops
         self.remove_dataloader_ops()
 
+        for n in self.nodes.values():
+            for c in n.children:
+                logging.info(f"wxftest 2 sort n {n.id} children {c.id}")
+
     def _versiontuple(self, v: str) -> Tuple[int]:
         return tuple(map(int, (v.split("."))))
 
