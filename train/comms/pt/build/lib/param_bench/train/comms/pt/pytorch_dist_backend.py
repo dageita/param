@@ -13,8 +13,8 @@ import numpy as np
 import torch
 import torch.distributed as dist
 import torch.nn as nn
-from et_replay.lib.comm.param_profile import paramProfile
-from et_replay.lib.comm.pytorch_backend_utils import (
+from param_bench.train.comms.pt.param_profile import paramProfile
+from param_bench.train.comms.pt.pytorch_backend_utils import (
     backendFunctions,
     collectiveArgsHolder,
 )
@@ -1045,7 +1045,6 @@ class PyTorchDistBackend(backendFunctions):
         self, master_ip, master_port, backend="gloo", eager_mode=False
     ):
         # Set CUDA device before initializing backend
-        
         # Required for backends that don't do lazy initialization, e.g. UCC
         self.set_device(self.bootstrap_info.local_rank, self.bootstrap_info.global_rank)
 
@@ -1063,28 +1062,23 @@ class PyTorchDistBackend(backendFunctions):
         else:
             self.use_ext_dist = False
 
-        #if self.tcp_store is None:
-        #    # TCP store initializaiton for generic CPU data
-        #    self.initialize_tcpstore(master_ip, master_port)
+        if self.tcp_store is None:
+            # TCP store initializaiton for generic CPU data
+            self.initialize_tcpstore(master_ip, master_port)
 
         if not dist.is_initialized():
             # init default process group if not yet initialized or extend_distributed failed or is disabled
-        #    dist.init_process_group(
-        #        backend,
-        #        rank=global_rank,
-        #        world_size=world_size,
-        #        store=self.tcp_store if self.commsParams.init_method is None else None,
-        #        init_method=self.commsParams.init_method,
-        #        device_id=(
-        #            torch.device(f"cuda:{self.bootstrap_info.local_rank}")
-        #            if eager_mode
-        #            else None
-        #        ),
-        #    
             dist.init_process_group(
                 backend,
                 rank=global_rank,
                 world_size=world_size,
+                store=self.tcp_store if self.commsParams.init_method is None else None,
+                init_method=self.commsParams.init_method,
+                device_id=(
+                    torch.device(f"cuda:{self.bootstrap_info.local_rank}")
+                    if eager_mode
+                    else None
+                ),
             )
 
         # default 1 group, maybe overwritten by user created groups via initialize_groups

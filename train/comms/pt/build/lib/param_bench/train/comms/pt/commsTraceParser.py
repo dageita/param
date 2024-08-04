@@ -5,11 +5,11 @@ import json
 
 from typing import List, Tuple
 
-from et_replay.lib.comm import comms_utils
-from et_replay.lib.comm.comms_utils import commsArgs
-from et_replay.lib.comm.pytorch_backend_utils import supportedP2pOps
-
 from et_replay.lib.execution_trace import ExecutionTrace
+
+from param_bench.train.comms.pt import comms_utils
+from param_bench.train.comms.pt.comms_utils import commsArgs
+from param_bench.train.comms.pt.pytorch_backend_utils import supportedP2pOps
 
 tensorDtypeMap = {
     "Tensor(int)": "int",
@@ -189,7 +189,6 @@ def _getTensorInfoFromPyTorchETEntry(
     Extract message size, tensor count, type from PyTorch ET entry inputs/outputs field.
     NOTE: This format can be changed at anytime. TODO: When an extract/parsing tool is available in ATC, switch to it.
     """
-    print(tensor_container, container_type)
     list_count = container_type.count("GenericList")
     tensors = []
     if list_count == 2:
